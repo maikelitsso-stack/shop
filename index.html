@@ -258,7 +258,7 @@
             }
         }
 
-        tg.onEvent('mainButtonClicked', function() {
+                tg.onEvent('mainButtonClicked', function() {
             tg.showPopup({
                 title: 'Подтверждение записи',
                 message: `Вы записываетесь на услуги: ${booking.services.join(', ')} к мастеру ${booking.master}. День: ${booking.day}, Время: ${booking.time}. Всё верно?`,
@@ -268,7 +268,14 @@
                 ]
             }, function(buttonId) {
                 if (buttonId === 'yes') {
-                    tg.close();
+                    // Имитация Варианта Б (отправка мастеру в личку)
+                    tg.showPopup({
+                        title: '🚀 Запись отправлена',
+                        message: `Макет сработал! В реальной версии мастеру ${booking.master} в личные сообщения только что пришло уведомление: "Клиент на ${booking.time} — ${booking.services.join(', ')}".`,
+                        buttons: [{type: 'ok', text: 'Отлично'}]
+                    }, function() {
+                        tg.close(); // Закрываем приложение после нажатия ОК
+                    });
                 }
             });
         });

@@ -234,7 +234,7 @@
             document.querySelectorAll('.master-row').forEach(el => el.classList.remove('open'));
             if (!isOpen) rowElement.classList.add('open');
         }
-
+        
         function handleBusyTime(event) {
             event.stopPropagation();
             tg.showAlert("⚠️ Извините, это время уже занято другим клиентом!");
@@ -242,12 +242,31 @@
 
         function selectTime(event, btn, masterName, timeValue) {
             event.stopPropagation();
+            
+            // Снимаем выделение со всех кнопок времени во всем приложении
             document.querySelectorAll('.time-btn.free').forEach(el => el.classList.remove('selected'));
+            
+            // Выделяем именно ту кнопку, на которую нажали
             btn.classList.add('selected');
+            
+            // Записываем данные в память
             booking.master = masterName;
             booking.time = timeValue;
+            
+            // Заставляем главную кнопку Telegram появиться снизу
             updateMainButton();
         }
+
+        function updateMainButton() {
+            // Проверяем, выбрано ли время И хотя бы одна услуга
+            if (booking.time && booking.services.length > 0) {
+                tg.MainButton.setText(`Записаться к ${booking.master} на ${booking.day} в ${booking.time}`);
+                tg.MainButton.show(); // Показываем кнопку
+            } else {
+                tg.MainButton.hide(); // Прячем, если чего-то не хватает
+            }
+        }
+        
 
         function updateMainButton() {
             if (booking.time && booking.services.length > 0) {

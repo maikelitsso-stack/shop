@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Салон Красоты GLOW</title>
+    <!-- Официальный скрипт Telegram -->
+    <script src="https://telegram.org"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #f9f6f7);
+            color: var(--tg-theme-text-color, #222222);
+            margin: 0;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            margin-bottom: 4px;
+            font-weight: 500;
+            color: var(--tg-theme-text-color, #111111);
+        }
+
+        .header p {
+            color: var(--tg-theme-hint-color, #999999);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .card {
+            background-color: var(--tg-theme-secondary-bg-color, #ffffff);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0;
+            margin-bottom: 14px;
+            color: var(--tg-theme-link-color, #e05a86);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-select {
+            background-color: var(--tg-theme-bg-color, #f9f6f7);
+            color: var(--tg-theme-text-color, #222222);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 14px 12px;
+            font-size: 13px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-select:active, .btn-select.active {
+            border-color: var(--tg-theme-button-color, #e05a86);
+            background-color: rgba(224, 90, 134, 0.08);
+        }
+
+        .price-tag {
+            display: inline-block;
+            margin-top: 6px;
+            font-weight: 600;
+            color: var(--tg-theme-link-color, #e05a86);
+        }
+
+        .master-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .master-item:last-child {
+            border-bottom: none;
+        }
+
+        .master-status {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        
+        .status-free { color: #2dc574; }
+        .status-busy { color: #f23c57; }
+
+        .info-text {
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 6px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>GLOW Beauty Studio</h1>
+        <p>Ваша идеальная атмосфера красоты</p>
+    </div>
+
+    <!-- БЛОК 1: Локация -->
+    <div class="card">
+        <div class="section-title">📍 Контакты и инфо</div>
+        <p class="info-text"><b>Адрес:</b> Астана, пр. Кабанбай Батыра, 17 (📍 2ГИС)</p>
+        <p class="info-text"><b>График:</b> 09:00 — 21:00 (Ежедневно)</p>
+    </div>
+
+    <!-- БЛОК 2: Цены и услуги салона -->
+    <div class="card">
+        <div class="section-title">💅 Услуги и стоимость</div>
+        <div class="grid">
+            <button class="btn-select" onclick="toggleSelect(this)">
+                <b>Маникюр + Гель-лак</b><br>
+                <span class="price-tag">7 000 ₸</span>
+            </button>
+            <button class="btn-select" onclick="toggleSelect(this)">
+                <b>Наращивание ресниц</b><br>
+                <span class="price-tag">9 500 ₸</span>
+            </button>
+            <button class="btn-select" onclick="toggleSelect(this)">
+                <b>Оформление бровей</b><br>
+                <span class="price-tag">4 000 ₸</span>
+            </button>
+            <button class="btn-select" onclick="toggleSelect(this)">
+                <b>Вечерний макияж</b><br>
+                <span class="price-tag">12 000 ₸</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- БЛОК 3: Мастера салона -->
+    <div class="card">
+        <div class="section-title">✨ Мастера и запись на сегодня</div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div class="master-item">
+                <div>
+                    <b>Айгерим (Top Nail-стилист)</b>
+                    <div class="master-status status-busy">Занята до 16:30</div>
+                </div>
+            </div>
+            <div class="master-item">
+                <div>
+                    <b>Мадина (Лэшмейкер)</b>
+                    <div class="master-status status-free">Свободна (Окно: 15:00, 18:30)</div>
+                </div>
+            </div>
+            <div class="master-item">
+                <div>
+                    <b>Алия (Визажист / Бровист)</b>
+                    <div class="master-status status-free">Есть окна на вечер</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        
+        tg.MainButton.setText("Записаться в салон");
+        tg.MainButton.show();
+
+        function toggleSelect(element) {
+            element.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

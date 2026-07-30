@@ -198,6 +198,17 @@
             </div>
         </div>
     </div>
+<div id="final-step" style="display: none;">
+    <h3>Финальный шаг: Подтверждение записи</h3>
+    
+    <label for="client-name">Ваше имя:</label>
+    <input type="text" id="client-name" placeholder="Введите имя" required><br><br>
+
+    <label for="client-phone">Номер телефона:</label>
+    <input type="tel" id="client-phone" placeholder="+7 (999) 999-99-99" required><br><br>
+
+    <button id="confirm-btn" onclick="sendBookingData()">Подтвердить запись</button>
+</div>
 
     <script>
         // Замените эти данные на ваши реальные токены и ID
@@ -385,15 +396,3 @@ async function sendBookingData() {
     </script>
 </body>
 </html>
-<!-- Форма финального шага (изначально скрыта, пока не выберут время) -->
-<div id="final-step" style="display: none;">
-    <h3>Финальный шаг: Подтверждение записи</h3>
-    
-    <label for="client-name">Ваше имя:</label>
-    <input type="text" id="client-name" placeholder="Введите имя" required><br><br>
-
-    <label for="client-phone">Номер телефона:</label>
-    <input type="tel" id="client-phone" placeholder="+7 (999) 999-99-99" required><br><br>
-
-    <button id="confirm-btn" onclick="sendBookingData()">Подтвердить запись</button>
-</div>

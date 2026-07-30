@@ -430,6 +430,118 @@ async function sendBookingData() {
                 }
             });
         });
+        // ==========================================
+// ВСТАВЛЯЙТЕ ЭТОТ КУСОК В САМЫЙ КОНЕЦ ФАЙЛА
+// ==========================================
+
+// 1. Создаем переменные для хранения выбора клиента
+let selectedDay = 'Сегодня';
+let selectedService = 'Не выбрана';
+let selectedMaster = 'Не выбран';
+let selectedTime = 'Не выбрано';
+
+// 2. Встраиваемся в вашу функцию выбора дня
+const originalSelectDay = selectDay;
+selectDay = function(element, day) {
+    selectedDay = day;
+    if (typeof originalSelectDay === 'function') originalSelectDay(element, day);
+};
+
+// 3. Встраиваемся в вашу функцию выбора услуги
+const originalToggleService = toggleService;
+toggleService = function(element, serviceName, price) {
+    selectedService = serviceName;
+    if (typeof originalToggleService === 'function') originalToggleService(element, serviceName, price);
+};
+
+// 4. Встраиваемся в вашу функцию выбора времени и активируем форму
+const originalSelectTime = selectTime;
+selectTime = function(event, element, masterName, timeValue) {
+    selectedMaster = masterName;
+    selectedTime = timeValue;
+
+    // Снимаем выделение со всех остальных кнопок времени
+    document.querySelectorAll('.time-btn.free').forEach(btn => btn.classList.remove('selected'));
+    element.classList.add('selected');
+
+    // Показываем блок финального шага с формой и плавно скроллим к нему
+    const finalStepBlock = document.getElementById('final-step');
+    if (finalStepBlock) {
+        finalStepBlock.style.display = 'block';
+        finalStepBlock.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    if (typeof originalSelectTime === 'function') originalSelectTime(event, element, masterName, timeValue);
+};
+
+// 5. Функция отправки данных в Telegram чат администратора
+async function sendBookingData() {
+    // Вставьте сюда ваши данные:
+    const BOT_TOKEN = 'УКАЖИТЕ_ЗДЕСЬ_ТОКЕН_БОТА'; 
+    const ADMIN_CHAT_ID = 'УКАЖИТЕ_ЗДЕСЬ_ID_ЧАТА'; 
+
+    const name = document.getElementById('client-name').value.trim();
+    const phone = document.getElementById('client-phone').value.trim();
+
+    if (!name || !phone) {
+        alert('Пожалуйста, заполните имя и номер телефона.');
+        return;
+    }
+
+    const messageText = `
+🔔 *Новая запись в салон GLOW!*
+
+📅 *Дата:* ${selectedDay}
+⏰ *Время:* ${selectedTime}
+✂️ *Услуга:* ${selectedService}
+👤 *Мастер:* ${selectedMaster}
+
+=== Данные клиента ===
+🙋‍♂️ *Имя:* ${name}
+📱 *Телефон:* ${phone}
+`.trim();
+
+    const url = `https://telegram.org{BOT_TOKEN}/sendMessage`;
+    const confirmBtn = document.getElementById('confirm-btn');
+    
+    confirmBtn.disabled = true;
+    confirmBtn.innerText = 'Отправка...';
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: ADMIN_CHAT_ID,
+                text: messageText,
+                parse_mode: 'Markdown'
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.ok) {
+            alert('Запись успешно подтверждена! Администратор свяжется с вами.');
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.close();
+            }
+        } else {
+            throw new Error(result.description);
+        }
+    } catch (error) {
+        console.error('Ошибка отправки:', error);
+        alert('Ошибка при отправке данных в Telegram.');
+    } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.innerText = 'Подтвердить запись';
+    }
+}
+
+// ЗАКРЫВАЕМ ВСЕ ТЕГИ, КОТОРЫХ НЕ ХВАТАЛО:
+</script>
+</body>
+</html>
+
     </script>
 </body>
 </html>

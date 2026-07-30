@@ -200,6 +200,90 @@
     </div>
 
     <script>
+        // Замените эти данные на ваши реальные токены и ID
+const BOT_TOKEN = '8717877976:AAF7NdigPMFdSjtCTN46RD_5rvggQEz7TD8'; // Токен вашего бота от @BotFather
+const ADMIN_CHAT_ID = '2076971933'; // ID чата администратора
+
+async function sendBookingData() {
+    // 1. Получаем имя и телефон из полей ввода
+    const name = document.getElementById('client-name').value.trim();
+    const phone = document.getElementById('client-phone').value.trim();
+
+    // Простая валидация полей
+    if (!name || !phone) {
+        alert('Пожалуйста, заполните имя и номер телефона.');
+        return;
+    }
+
+    // 2. Сбор ранее сохраненных данных (замените названия переменных на ваши)
+    // Предполагается, что эти переменные объявлялись глобально при кликах на прошлых шагах
+    const bookingData = {
+        day: selectedDay,       // Например: "15 Октября"
+        service: selectedService, // Например: "Стрижка"
+        master: selectedMaster,   // Например: "Иван"
+        time: selectedTime,       // Например: "14:30"
+        name: name,
+        phone: phone
+    };
+
+    // 3. Формируем красивый текст сообщения для администратора
+    const messageText = `
+🔔 *Новая запись в салон!*
+
+📅 *Дата:* ${bookingData.day}
+⏰ *Время:* ${bookingData.time}
+✂️ *Услуга:* ${bookingData.service}
+👤 *Мастер:* ${bookingData.master}
+
+=== Данные клиента ===
+🙋‍♂️ *Имя:* ${bookingData.name}
+📱 *Телефон:* ${bookingData.phone}
+`.trim();
+
+    // URL для отправки сообщения через Telegram Bot API
+    const url = `https://telegram.org{BOT_TOKEN}/sendMessage`;
+
+    // Делаем кнопку неактивной, чтобы избежать повторных нажатий
+    const confirmBtn = document.getElementById('confirm-btn');
+    confirmBtn.disabled = true;
+    confirmBtn.innerText = 'Отправка...';
+
+    try {
+        // 4. Отправляем POST-запрос в Telegram
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chat_id: ADMIN_CHAT_ID,
+                text: messageText,
+                parse_mode: 'Markdown' // Включает жирный шрифт для текста
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.ok) {
+            alert('Запись успешно подтверждена! Администратор свяжется с вами.');
+            
+            // Если Web App запущен внутри Telegram, его можно закрыть красиво:
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.close();
+            }
+        } else {
+            throw new Error(result.description);
+        }
+    } catch (error) {
+        console.error('Ошибка отправки:', error);
+        alert('Произошла ошибка при отправке данных. Попробуйте еще раз.');
+    } finally {
+        // Возвращаем кнопку в исходное состояние при ошибке
+        confirmBtn.disabled = false;
+        confirmBtn.innerText = 'Подтвердить запись';
+    }
+}
+        
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
@@ -301,3 +385,15 @@
     </script>
 </body>
 </html>
+<!-- Форма финального шага (изначально скрыта, пока не выберут время) -->
+<div id="final-step" style="display: none;">
+    <h3>Финальный шаг: Подтверждение записи</h3>
+    
+    <label for="client-name">Ваше имя:</label>
+    <input type="text" id="client-name" placeholder="Введите имя" required><br><br>
+
+    <label for="client-phone">Номер телефона:</label>
+    <input type="tel" id="client-phone" placeholder="+7 (999) 999-99-99" required><br><br>
+
+    <button id="confirm-btn" onclick="sendBookingData()">Подтвердить запись</button>
+</div>

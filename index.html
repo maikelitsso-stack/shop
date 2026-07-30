@@ -409,27 +409,6 @@ async function sendBookingData() {
             }
         }
 
-                tg.onEvent('mainButtonClicked', function() {
-            tg.showPopup({
-                title: 'Подтверждение записи',
-                message: `Вы записываетесь на услуги: ${booking.services.join(', ')} к мастеру ${booking.master}. День: ${booking.day}, Время: ${booking.time}. Всё верно?`,
-                buttons: [
-                    {id: 'yes', type: 'default', text: 'Да, записаться'},
-                    {id: 'no', type: 'cancel', text: 'Отмена'}
-                ]
-            }, function(buttonId) {
-                if (buttonId === 'yes') {
-                    // Имитация Варианта Б (отправка мастеру в личку)
-                    tg.showPopup({
-                        title: '🚀 Запись отправлена',
-                        message: `Макет сработал! В реальной версии мастеру ${booking.master} в личные сообщения только что пришло уведомление: "Клиент на ${booking.time} — ${booking.services.join(', ')}".`,
-                        buttons: [{type: 'ok', text: 'Отлично'}]
-                    }, function() {
-                        tg.close(); // Закрываем приложение после нажатия ОК
-                    });
-                }
-            });
-        });
         // ==========================================
 // ВСТАВЛЯЙТЕ ЭТОТ КУСОК В САМЫЙ КОНЕЦ ФАЙЛА
 // ==========================================
@@ -477,8 +456,8 @@ selectTime = function(event, element, masterName, timeValue) {
 // 5. Функция отправки данных в Telegram чат администратора
 async function sendBookingData() {
     // Вставьте сюда ваши данные:
-    const BOT_TOKEN = 'УКАЖИТЕ_ЗДЕСЬ_ТОКЕН_БОТА'; 
-    const ADMIN_CHAT_ID = 'УКАЖИТЕ_ЗДЕСЬ_ID_ЧАТА'; 
+    const BOT_TOKEN = '8717877976:AAF7NdigPMFdSjtCTN46RD_5rvggQEz7TD8'; 
+    const ADMIN_CHAT_ID = '2076971933'; 
 
     const name = document.getElementById('client-name').value.trim();
     const phone = document.getElementById('client-phone').value.trim();

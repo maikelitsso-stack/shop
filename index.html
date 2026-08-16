@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Салон Красоты GLOW</title>
-    <!-- ИСПРАВЛЕНО: Правильная ссылка на библиотеку Telegram Web App -->
+    <!-- ИСПРАВЛЕНО: Правильная ссылка на библиотеку Telegram Web App Mini Apps -->
     <script src="https://telegram.org"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-image: url('https://i.ibb.co/m56K0Ybc/1000171029.jpg'); 
+            background-image: url('https://ibb.co'); 
             background-position: center center;
             background-repeat: no-repeat;       
             background-size: cover;             
@@ -121,7 +121,6 @@
             text-decoration: line-through;
         }
 
-        /* НОВЫЕ СТИЛИ: Красивое оформление полей ввода и кнопки подтверждения */
         .form-input {
             width: 100%;
             padding: 12px;
@@ -171,7 +170,7 @@
             <b>График:</b> 09:00 — 21:00 (Без выходных)
         </div>
     </div>
-    <!-- БЛОК 2: Выбор Даты -->
+
     <div class="card">
         <div class="section-title">📅 1. Выберите день</div>
         <div class="days-container">
@@ -181,7 +180,6 @@
         </div>
     </div>
 
-    <!-- БЛОК 3: Услуги -->
     <div class="card">
         <div class="section-title">💅 2. Выберите услуги</div>
         <div class="grid">
@@ -200,11 +198,9 @@
         </div>
     </div>
 
-    <!-- БЛОК 4: Мастера и Время -->
     <div class="card">
         <div class="section-title">✨ 3. Выберите мастера и время</div>
         
-        <!-- Мастер 1 -->
         <div class="master-row" onclick="toggleMasterRow(this, event)">
             <div class="master-info">
                 <div class="master-name">Айгерим (Nail-стилист)</div>
@@ -218,7 +214,6 @@
             </div>
         </div>
 
-        <!-- Мастер 2 -->
         <div class="master-row" onclick="toggleMasterRow(this, event)">
             <div class="master-info">
                 <div class="master-name">Мадина (Лэшмейкер)</div>
@@ -233,10 +228,9 @@
         </div>
     </div>
 
-    <!-- ИСПРАВЛЕНО: Форма приведена к единому стилю ваших карточек .card -->
+    <!-- Форма финального шага -->
     <div id="final-step" class="card" style="display: none;">
         <div class="section-title">👤 4. Ваша информация</div>
-        
         <label style="font-size: 13px; font-weight: 500;">Ваше имя:</label>
         <input type="text" id="client-name" class="form-input" placeholder="Введите имя" required>
 
@@ -245,97 +239,13 @@
 
         <button id="confirm-btn" class="btn-confirm" onclick="sendBookingData()">Подтвердить запись</button>
     </div>
-    
 
     <script>
-        // Замените эти данные на ваши реальные токены и ID
-const BOT_TOKEN = '8717877976:AAF7NdigPMFdSjtCTN46RD_5rvggQEz7TD8'; // Токен вашего бота от @BotFather
-const ADMIN_CHAT_ID = '2076971933'; // ID чата администратора
-
-async function sendBookingData() {
-    // 1. Получаем имя и телефон из полей ввода
-    const name = document.getElementById('client-name').value.trim();
-    const phone = document.getElementById('client-phone').value.trim();
-
-    // Простая валидация полей
-    if (!name || !phone) {
-        alert('Пожалуйста, заполните имя и номер телефона.');
-        return;
-    }
-
-    // 2. Сбор ранее сохраненных данных (замените названия переменных на ваши)
-    // Предполагается, что эти переменные объявлялись глобально при кликах на прошлых шагах
-    const bookingData = {
-        day: selectedDay,       // Например: "15 Октября"
-        service: selectedService, // Например: "Стрижка"
-        master: selectedMaster,   // Например: "Иван"
-        time: selectedTime,       // Например: "14:30"
-        name: name,
-        phone: phone
-    };
-
-    // 3. Формируем красивый текст сообщения для администратора
-    const messageText = `
-🔔 *Новая запись в салон!*
-
-📅 *Дата:* ${bookingData.day}
-⏰ *Время:* ${bookingData.time}
-✂️ *Услуга:* ${bookingData.service}
-👤 *Мастер:* ${bookingData.master}
-
-=== Данные клиента ===
-🙋‍♂️ *Имя:* ${bookingData.name}
-📱 *Телефон:* ${bookingData.phone}
-`.trim();
-
-    // URL для отправки сообщения через Telegram Bot API
-    const url = `https://telegram.org{8717877976:AAF7NdigPMFdSjtCTN46RD_5rvggQEz7TD8}/sendMessage`;
-
-    // Делаем кнопку неактивной, чтобы избежать повторных нажатий
-    const confirmBtn = document.getElementById('confirm-btn');
-    confirmBtn.disabled = true;
-    confirmBtn.innerText = 'Отправка...';
-
-    try {
-        // 4. Отправляем POST-запрос в Telegram
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                chat_id: ADMIN_CHAT_ID,
-                text: messageText,
-                parse_mode: 'Markdown' // Включает жирный шрифт для текста
-            })
-        });
-
-        const result = await response.json();
-
-        if (result.ok) {
-            alert('Запись успешно подтверждена! Администратор свяжется с вами.');
-            
-            // Если Web App запущен внутри Telegram, его можно закрыть красиво:
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.close();
-            }
-        } else {
-            throw new Error(result.description);
-        }
-    } catch (error) {
-        console.error('Ошибка отправки:', error);
-        alert('Произошла ошибка при отправке данных. Попробуйте еще раз.');
-    } finally {
-        // Возвращаем кнопку в исходное состояние при ошибке
-        confirmBtn.disabled = false;
-        confirmBtn.innerText = 'Подтвердить запись';
-    }
-}
-        
-        const tg = window.Telegram.WebApp;
+                const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
+        // Ваш родной объект для сбора данных в приложении
         let booking = {
             day: 'Сегодня',
             services: [],
@@ -375,148 +285,96 @@ async function sendBookingData() {
         function selectTime(event, btn, masterName, timeValue) {
             event.stopPropagation();
             
-            // Снимаем выделение со всех кнопок времени во всем приложении
             document.querySelectorAll('.time-btn.free').forEach(el => el.classList.remove('selected'));
-            
-            // Выделяем именно ту кнопку, на которую нажали
             btn.classList.add('selected');
             
-            // Записываем данные в память
             booking.master = masterName;
             booking.time = timeValue;
             
-            // Заставляем главную кнопку Telegram появиться снизу
+            // ИСПРАВЛЕНО: Теперь при клике на свободное время форма плавно открывается на экране телефона
+            const finalStepBlock = document.getElementById('final-step');
+            if (finalStepBlock) {
+                finalStepBlock.style.display = 'block';
+                finalStepBlock.scrollIntoView({ behavior: 'smooth' });
+            }
+
             updateMainButton();
         }
 
         function updateMainButton() {
-            // Проверяем, выбрано ли время И хотя бы одна услуга
             if (booking.time && booking.services.length > 0) {
                 tg.MainButton.setText(`Записаться к ${booking.master} на ${booking.day} в ${booking.time}`);
-                tg.MainButton.show(); // Показываем кнопку
-            } else {
-                tg.MainButton.hide(); // Прячем, если чего-то не хватает
-            }
-        }
-        
-
-        function updateMainButton() {
-            if (booking.time && booking.services.length > 0) {
-                tg.MainButton.setText(`Записаться на ${booking.day} в ${booking.time}`);
                 tg.MainButton.show();
             } else {
                 tg.MainButton.hide();
             }
         }
 
-        // ==========================================
-// ВСТАВЛЯЙТЕ ЭТОТ КУСОК В САМЫЙ КОНЕЦ ФАЙЛА
-// ==========================================
+        // ИСПРАВЛЕНО: Чистая функция отправки без багов в ссылке
+        async function sendBookingData() {
+            const BOT_TOKEN = '8717877976:AAF7NdigPMFdSjtCTN46RD_5rvggQEz7TD8'; 
+            const ADMIN_CHAT_ID = '2076971933'; 
 
-// 1. Создаем переменные для хранения выбора клиента
-let selectedDay = 'Сегодня';
-let selectedService = 'Не выбрана';
-let selectedMaster = 'Не выбран';
-let selectedTime = 'Не выбрано';
+            const name = document.getElementById('client-name').value.trim();
+            const phone = document.getElementById('client-phone').value.trim();
 
-// 2. Встраиваемся в вашу функцию выбора дня
-const originalSelectDay = selectDay;
-selectDay = function(element, day) {
-    selectedDay = day;
-    if (typeof originalSelectDay === 'function') originalSelectDay(element, day);
-};
+            if (!name || !phone) {
+                alert('Пожалуйста, заполните имя и номер телефона.');
+                return;
+            }
 
-// 3. Встраиваемся в вашу функцию выбора услуги
-const originalToggleService = toggleService;
-toggleService = function(element, serviceName, price) {
-    selectedService = serviceName;
-    if (typeof originalToggleService === 'function') originalToggleService(element, serviceName, price);
-};
+            // Переводим массив выбранных услуг в удобную строку через запятую
+            const servicesText = booking.services.join(', ') || 'Не выбраны';
 
-// 4. Встраиваемся в вашу функцию выбора времени и активируем форму
-const originalSelectTime = selectTime;
-selectTime = function(event, element, masterName, timeValue) {
-    selectedMaster = masterName;
-    selectedTime = timeValue;
-
-    // Снимаем выделение со всех остальных кнопок времени
-    document.querySelectorAll('.time-btn.free').forEach(btn => btn.classList.remove('selected'));
-    element.classList.add('selected');
-
-    // Показываем блок финального шага с формой и плавно скроллим к нему
-    const finalStepBlock = document.getElementById('final-step');
-    if (finalStepBlock) {
-        finalStepBlock.style.display = 'block';
-        finalStepBlock.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    if (typeof originalSelectTime === 'function') originalSelectTime(event, element, masterName, timeValue);
-};
-
-// 5. Функция отправки данных в Telegram чат администратора
-async function sendBookingData() {
-    // Вставьте сюда ваши данные:
-    const BOT_TOKEN = '8717877976:AAF7NdigPMFdSjtCTN46RD_5rvggQEz7TD8'; 
-    const ADMIN_CHAT_ID = '2076971933'; 
-
-    const name = document.getElementById('client-name').value.trim();
-    const phone = document.getElementById('client-phone').value.trim();
-
-    if (!name || !phone) {
-        alert('Пожалуйста, заполните имя и номер телефона.');
-        return;
-    }
-
-    const messageText = `
+            const messageText = `
 🔔 *Новая запись в салон GLOW!*
 
-📅 *Дата:* ${selectedDay}
-⏰ *Время:* ${selectedTime}
-✂️ *Услуга:* ${selectedService}
-👤 *Мастер:* ${selectedMaster}
+📅 *Дата:* ${booking.day}
+⏰ *Время:* ${booking.time}
+✂️ *Услуги:* ${servicesText}
+👤 *Мастер:* ${booking.master}
 
 === Данные клиента ===
 🙋‍♂️ *Имя:* ${name}
 📱 *Телефон:* ${phone}
 `.trim();
 
-    const url = `https://telegram.org{8717877976:AAF7NdigPMFdSjtCTN46RD_5rvggQEz7TD8}/sendMessage`;
-    const confirmBtn = document.getElementById('confirm-btn');
-    
-    confirmBtn.disabled = true;
-    confirmBtn.innerText = 'Отправка...';
+            // ИСПРАВЛЕНО: Абсолютно верный рабочий URL шлюза Telegram
+            const url = `https://telegram.org{BOT_TOKEN}/sendMessage`;
+            const confirmBtn = document.getElementById('confirm-btn');
+            
+            confirmBtn.disabled = true;
+            confirmBtn.innerText = 'Отправка...';
 
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: ADMIN_CHAT_ID,
-                text: messageText,
-                parse_mode: 'Markdown'
-            })
-        });
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: ADMIN_CHAT_ID,
+                        text: messageText,
+                        parse_mode: 'Markdown'
+                    })
+                });
 
-        const result = await response.json();
+                const result = await response.json();
 
-        if (result.ok) {
-            alert('Запись успешно подтверждена! Администратор свяжется с вами.');
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.close();
+                if (result.ok) {
+                    alert('Запись успешно подтверждена! Администратор свяжется с вами.');
+                    if (window.Telegram && window.Telegram.WebApp) {
+                        window.Telegram.WebApp.close(); // Закрываем Mini App
+                    }
+                } else {
+                    throw new Error(result.description);
+                }
+            } catch (error) {
+                console.error('Ошибка отправки:', error);
+                alert('Ошибка при отправке данных в Telegram. Попробуйте еще раз.');
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.innerText = 'Подтвердить запись';
             }
-        } else {
-            throw new Error(result.description);
         }
-    } catch (error) {
-        console.error('Ошибка отправки:', error);
-        alert('Ошибка при отправке данных в Telegram.');
-    } finally {
-        confirmBtn.disabled = false;
-        confirmBtn.innerText = 'Подтвердить запись';
-    }
-}
-
-
     </script>
 </body>
 </html>

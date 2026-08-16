@@ -239,11 +239,16 @@
 
         <button id="confirm-btn" class="btn-confirm" onclick="sendBookingData()">Подтвердить запись</button>
     </div>
-        <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+    <script>
+        // Безопасное подключение Telegram WebApp без вылетов
+        let tg = null;
+        if (window.Telegram && window.Telegram.WebApp) {
+            tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+        }
 
+        // Объект сбора данных
         let booking = {
             day: 'Сегодня',
             services: [],
@@ -277,7 +282,11 @@
         
         function handleBusyTime(event) {
             event.stopPropagation();
-            tg.showAlert("⚠️ Извините, это время уже занято другим клиентом!");
+            if (tg) {
+                tg.showAlert("⚠️ Извините, это время уже занято другим клиентом!");
+            } else {
+                alert("⚠️ Извините, это время уже занято другим клиентом!");
+            }
         }
 
         function selectTime(event, btn, masterName, timeValue) {
@@ -289,18 +298,19 @@
             booking.master = masterName;
             booking.time = timeValue;
             
+            // Жёсткое включение формы без капризных анимаций скролла
             const finalStepBlock = document.getElementById('final-step');
             if (finalStepBlock) {
                 finalStepBlock.style.display = 'block';
-                finalStepBlock.scrollIntoView({ behavior: 'smooth' });
             }
 
             updateMainButton();
         }
 
         function updateMainButton() {
+            if (!tg) return; // Если открыто не в телеге, не ломаем код
             if (booking.time && booking.services.length > 0) {
-                tg.MainButton.setText(`Записаться к ${booking.master} на ${booking.day} в ${booking.time}`);
+                tg.MainButton.setText("Записаться к " + booking.master + " на " + booking.day + " в " + booking.time);
                 tg.MainButton.show();
             } else {
                 tg.MainButton.hide();
@@ -354,10 +364,8 @@
                 const result = await response.json();
 
                 if (result.ok) {
-                    alert('Запись успешно подтверждена! Администратор свяжется с вами.');
-                    if (window.Telegram && window.Telegram.WebApp) {
-                        window.Telegram.WebApp.close();
-                    }
+                    alert('Запись успешно подтверждена!');
+                    if (tg) tg.close();
                 } else {
                     throw new Error(result.description);
                 }
@@ -372,3 +380,6 @@
     </script>
 </body>
 </html>
+
+
+

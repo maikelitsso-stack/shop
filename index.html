@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Салон Красоты GLOW</title>
-    <!-- Быстрое CDN зеркало, чтобы приложение загружалось мгновенно -->
+    <!-- Быстрое CDN зеркало, одобренное GitHub и Telegram -->
     <script src="https://cloudflare.com"></script>
     <style>
         body {
@@ -228,7 +228,7 @@
         </div>
     </div>
 
-    <!-- Форма ввода контактов -->
+    <!-- Форма финального шага -->
     <div id="final-step" class="card" style="display: none;">
         <div class="section-title">👤 4. Ваша информация</div>
         <label style="font-size: 13px; font-weight: 500;">Ваше имя:</label>
@@ -334,7 +334,7 @@
 📱 *Телефон:* ${phone}
 `.trim();
 
-            const url = `https://telegram.org{BOT_TOKEN}/sendMessage`;
+            const url = 'https://telegram.org' + BOT_TOKEN + '/sendMessage';
             const confirmBtn = document.getElementById('confirm-btn');
             
             confirmBtn.disabled = true;
